@@ -12,6 +12,16 @@
 
 #include "libft.h"
 
+static size_t	str_len(char const *str)
+{
+	size_t	i;
+
+	i = 0;
+	while (*(str + i))
+		i++;
+	return (i);
+}
+
 char	*ft_strjoin(char const *s1, char const *s2)
 {
 	char	*newstr;
@@ -21,8 +31,8 @@ char	*ft_strjoin(char const *s1, char const *s2)
 
 	if (!s1 || !s2)
 		return (NULL);
-	lens1 = ft_strlen(s1);
-	lens2 = ft_strlen(s2);
+	lens1 = str_len(s1);
+	lens2 = str_len(s2);
 	newstr = (char *)malloc(sizeof(char) * (lens1 + lens2 + 1));
 	if (!newstr)
 		return (NULL);

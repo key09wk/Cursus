@@ -22,12 +22,22 @@ static char	*str_new(size_t n)
 	return (str);
 }
 
+static size_t	str_len(char const *str)
+{
+	size_t	i;
+
+	i = 0;
+	while (*(str + i))
+		i++;
+	return (i);
+}
+
 char	*ft_strdup(char const *src)
 {
 	char	*dest;
 	char	*start;
 
-	dest = str_new(ft_strlen(src));
+	dest = str_new(str_len(src));
 	if (!dest)
 		return (NULL);
 	start = dest;
