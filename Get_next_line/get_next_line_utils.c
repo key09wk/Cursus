@@ -1,70 +1,46 @@
 #include "get_next_line.h"
 
-size_t	ft_strlen(const char *s)
+char  *ft_strchr(const char *str, int c)
+{
+  while (*str != (char) c)
+  {
+	
+    if (!*str)
+      return (NULL);
+	str++;
+  }
+  return ((char *) str);
+}
+
+static size_t	str_len(char const *str)
 {
 	size_t	i;
 
 	i = 0;
-	while (s[i] != '\0')
+	while (*(str + i))
 		i++;
 	return (i);
 }
 
-void	ft_bzero(void *s, size_t n)
+char	*ft_strjoin(char const *s1, char const *s2)
 {
-	unsigned char	*p;
-	size_t			i;
+	char	*newstr;
+	char	*start;
+	int		lens1;
+	int		lens2;
 
-	p = s;
-	i = 0;
-	while (i < n)
-	{
-		p[i] = 0;
-		i++;
-	}
-}
-
-char	*ft_strchr(const char *s, int c)
-{
-	while (*s != (char) c)
-	{
-		if (!*s++)
-			return (NULL);
-	}
-	return ((char *) s);
-}
-
-void	*ft_calloc(size_t count, size_t size)
-{
-	void	*str;
-
-	if (count == 0 && size == 0 && SIZE_MAX / count < size)
+	if (!s1 || !s2)
 		return (NULL);
-	str = malloc(count * size);
-	if (!str)
+	lens1 = str_len(s1);
+	lens2 = str_len(s2);
+	newstr = (char *)malloc(sizeof(char) * (lens1 + lens2 + 1));
+	if (!newstr)
 		return (NULL);
-	ft_bzero(str, count * size);
-	return (str);
-}
-
-char	*ft_substr(char const *s, unsigned int start, size_t len)
-{
-	char	*str;
-	char	*str_ptr;
-
-	if (!s)
-		return (NULL);
-	if (start > ft_strlen(s))
-		len = 0;
-	else if (len > (ft_strlen(s) - start))
-		len = ft_strlen(s) - start;
-	str = (char *)malloc(sizeof(char) * (len + 1));
-	if (!str)
-		return (NULL);
-	s += start;
-	str_ptr = str;
-	*(str + len) = '\0';
-	while (len-- && *s)
-		*str++ = *s++;
-	return (str_ptr);
+	start = newstr;
+	while (*s1)
+		*newstr++ = *s1++;
+	while (*s2)
+		*newstr++ = *s2++;
+	*newstr = '\0';
+	return (start);
 }

@@ -1,25 +1,37 @@
 #include "get_next_line.h"
 
-void get_buffer(int fd, char **storage)
-{
-	int		nbytes;
-
-	*storage = (char *)malloc(sizeof(char) * (BUFFER_SIZE + 1));
-	if (!storage)
-		return ;
-	nbytes = read(fd, *storage, BUFFER_SIZE);
-	if (nbytes < 0)
-		return ;
-}
-
 ////////////////////////////////////////////////////////////////////////////////
 
-char	*refresh_line(char **storage)
+char *get_storage(int fd, char *storage)
 {
-	
+	char *buffer;
+	long int nb;
+	int i;
 
-
-
+	if (!storage)
+		storage = ft_strjoin("", "");
+	i = 0;
+	nb = 1;
+	buffer = (char *)malloc(sizeof(char) * (BUFFER_SIZE + 1));
+	if (!buffer)
+		return (NULL);
+	while (nb > 0)
+	{
+		nb = read(fd, buffer, BUFFER_SIZE);
+		if (nb == -1)
+		{
+			free(buffer);
+			return (NULL);
+		}
+		buffer[nb] = '\0';
+		storage = ft_strjoin(storage, buffer);
+		if (ft_strchr(buffer, '\n'))
+			break ;
+		i++;
+	}
+	printf("the numbers of BUFFER_SIZE is : %i\n", BUFFER_SIZE);
+	free(buffer);
+	return (storage);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -30,14 +42,14 @@ char	*get_next_line(int fd)
 	char		*line;
 
 	if (fd < 0 || BUFFER_SIZE <= 0)
+	{
+		close(fd);
 		return (NULL);
-	get_buffer(fd, &storage);
+	}
+	storage = get_storage(fd, storage);
 	if (!storage)
 		return (NULL);
-	line = refresh_line(&storage);
-	if (!line)
-		return (NULL);
-	return (line);
+	return (storage);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -46,9 +58,12 @@ int	main(void)
 {
 	int	fd;
 
-	fd = open("test.txt", O_RDONLY);
+	fd = open("file.txt", O_RDONLY);
 	if (fd < 0)
-		return (printf("error"), 0);
+	{
+		close(fd);
+		return (0);
+	}
 	printf("%s", get_next_line(fd));
 	close (fd);
 	return (0);
