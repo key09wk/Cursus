@@ -1,2 +1,3 @@
-0000
-oooo
+1 oooo
+2 iiii
+3 eeee
