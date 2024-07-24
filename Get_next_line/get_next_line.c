@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: skey09 <skey09@student.42.fr>              +#+  +:+       +#+        */
+/*   By: kpalacio <kpalacio@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/17 20:54:06 by kpalacio          #+#    #+#             */
-/*   Updated: 2024/07/19 00:16:31 by skey09           ###   ########.fr       */
+/*   Updated: 2024/07/25 00:08:24 by kpalacio         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,87 +14,78 @@
 
 ////////////////////////////////////////////////////////////////////////////////
 
+char	*ft_free(char **str)
+{
+	free(*str);
+	*str = NULL;
+	return (NULL);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
 char *get_storage(int fd, char *storage)
 {
 	char *buffer;
 	long int nb;
-	char *tmp;
 
-	if (!storage)
-		storage = ft_strjoin("", "");
+	nb = 1;
 	buffer = (char *)malloc(sizeof(char) * (BUFFER_SIZE + 1));
 	if (!buffer)
-		return (NULL);
-	nb = 1;
-	while (nb > 0)
+		return (ft_free(&storage));
+	buffer[0] = '\0';
+	while (nb > 0 && !ft_strchr(buffer, '\n'))
 	{
 		nb = read(fd, buffer, BUFFER_SIZE);
-		if (nb == -1)
+		if (nb > 0)
 		{
-			free(buffer);
-			return (NULL);
-		}
-		buffer[nb] = '\0';
-		tmp = ft_strjoin(storage, buffer);
-		free(storage);
-		storage = tmp;
-		if (ft_strchr(buffer, '\n'))
-			break ;
+			buffer[nb] = '\0';
+			storage = ft_strjoin(storage, buffer);
+		}	
 	}
 	free(buffer);
+	if (nb == -1)
+		return (ft_free(&storage));
 	return (storage);
 } //OK!
 
 ////////////////////////////////////////////////////////////////////////////////
 
-char *get_line(const char *storage)
+char *get_line(char *storage)
 {
-    char *line;
-    long int bytes;
-	
-	bytes = 0;
-	if (!storage[bytes])
+    char	*line;
+	char	*ptr;
+	int		len;
+
+	ptr = ft_strchr(storage, '\n');
+	len = (ptr - storage) + 1;
+	line = ft_substr(storage, 0, len);
+	if (!line)
 		return (NULL);
-    while (storage[bytes] && storage[bytes] != '\n')
-        bytes++;
-    line = (char *)malloc(sizeof(char) * (bytes + 1));
-    if (!line)
-        return (NULL);
-	bytes = 0;
-	while (storage[bytes] && storage[bytes] != '\n')
-	{
-		line[bytes] = storage[bytes];
-		bytes++;
-	}
-	if (storage[bytes] && storage[bytes] == '\n')
-		line[bytes++] = '\0';
-    return (line);
+	return (line);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 
-char *update_storage(char *storage) //error
+char *update_storage(char *storage)
 {
-	char *new_storage;
-    long int bytes;
-	long int aux;
-	
-	bytes = 0;
-	while(storage[bytes] && storage[bytes] != '\n')
-		bytes++;
-	if (!storage[bytes])
+	char	*new_storage;
+	char	*ptr;
+	int		len;
+
+	ptr = ft_strchr(storage, '\n');
+	if (!ptr)
 	{
-		free(storage);
-		return (NULL);
+		new_storage = NULL;
+		return (ft_free(&storage));
 	}
-	new_storage = (char *)malloc(sizeof(char) * (ft_str_len(storage) - (bytes + 1)));
+	else
+		len = (ptr - storage) + 1;
+	if (!storage[len])
+		return (ft_free(&storage));
+	new_storage = ft_substr(storage, len, ft_str_len(storage) - len);
+	ft_free(&storage);
 	if (!new_storage)
 		return (NULL);
-	bytes++;
-	aux = 0;
-	while(storage[bytes])
-		new_storage[aux++] = storage[bytes++];
-	free(storage);
 	return (new_storage);
 }
 
@@ -110,7 +101,8 @@ char	*get_next_line(int fd)
 		close(fd);
 		return (NULL);
 	}
-	storage = get_storage(fd, storage);
+	if ((storage && !ft_strchr(storage, '\n')) || !storage)
+			storage = get_storage(fd, storage);
 	if (!storage)
 		return (NULL);
 	line = get_line(storage);
@@ -123,10 +115,13 @@ char	*get_next_line(int fd)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-
+/*
 int	main(void)
 {
 	int	fd;
+	update_storage(char *storage);
+	char *get_line(const char *storage);
+	char *get_storage(int fd, char *storage);
 
 	fd = open("file.txt", O_RDONLY);
 	printf("%s", get_next_line(fd));
@@ -135,5 +130,5 @@ int	main(void)
 	close (fd);
 	return (0);
 }
-
+*/
 ////////////////////////////////////////////////////////////////////////////////

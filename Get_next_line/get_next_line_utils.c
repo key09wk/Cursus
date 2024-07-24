@@ -45,31 +45,29 @@ char	*ft_strjoin(char const *s1, char const *s2)
 	return (start);
 }
 
-void	*ft_memcpy(void *dst, const void *src, size_t n)
+char	*ft_substr(char *s, unsigned int start, size_t len)
 {
-	void	*ptr;
+	size_t	i;
+	char	*res;
 
-	ptr = dst;
-	if (!dst && !src)
-		return (dst);
-	while (n--)
-		*(char *)dst++ = *(char *)src++;
-	return (ptr);
-}
-
-char	*ft_strdup(char const *src)
-{
-	char	*dest;
-	char	*start;
-	size_t n;
-
-	n = ft_str_len(src);
-	dest = (char *)malloc(sizeof(char) * (n + 1));
-	if (!dest)
+	i = 0;
+	if (!s)
+		return (0);
+	if (start > ft_str_len(s))
+	{
+		res = malloc(sizeof(char) * (1));
+		if (!res)
+			return (NULL);
+		res[0] = '\0';
+		return (res);
+	}
+	if (ft_str_len(s) - start < len)
+		len = ft_str_len(s) - start;
+	res = malloc(sizeof(char) * (len + 1));
+	if (!res)
 		return (NULL);
-	start = dest;
-	while (*src)
-		*dest++ = *src++;
-	*dest = '\0';
-	return (start);
+	while (start < ft_str_len(s) && i < len && s[start])
+		res[i++] = s[start++];
+	res[i] = '\0';
+	return (res);
 }
