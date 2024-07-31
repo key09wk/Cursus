@@ -1,73 +1,79 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   get_next_line_utils.c                              :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: kpalacio <kpalacio@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/07/22 16:34:15 by kpalacio          #+#    #+#             */
+/*   Updated: 2024/07/31 18:24:13 by kpalacio         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "get_next_line.h"
 
-char  *ft_strchr(const char *str, int c)
+size_t  ft_str_len(const char *s)
 {
-  while (*str != (char) c)
-  {
-	
-    if (!*str)
-      return (NULL);
-	str++;
-  }
-  return ((char *) str);
+    size_t  n;
+
+    n = 0;
+    while (s[n] != '\0')
+        n++;
+    return (n);
 }
 
-size_t	ft_str_len(char const *str)
+char    *ft_strchr(const char *str, int c)
 {
-	size_t	i;
-
-	i = 0;
-	while (*(str + i))
-		i++;
-	return (i);
+    while (*str != (char)c)
+    {
+        if (!*str)
+            return (NULL);
+        str++;
+    }
+    return ((char *)str);
 }
 
-char	*ft_strjoin(char const *s1, char const *s2)
+char    *ft_strjoin(char const *s1, char const *s2)
 {
-	char	*newstr;
-	char	*start;
-	int		lens1;
-	int		lens2;
+    char    *new;
+    char    *start;
+    int     len1;
+    int     len2;
 
-	if (!s1 || !s2)
-		return (NULL);
-	lens1 = ft_str_len(s1);
-	lens2 = ft_str_len(s2);
-	newstr = (char *)malloc(sizeof(char) * (lens1 + lens2 + 1));
-	if (!newstr)
-		return (NULL);
-	start = newstr;
-	while (*s1)
-		*newstr++ = *s1++;
-	while (*s2)
-		*newstr++ = *s2++;
-	*newstr = '\0';
-	return (start);
+    if (!s1 || !s2)
+        return (NULL);
+    len1 = ft_str_len(s1);
+    len2 = ft_str_len(s2);
+    new = (char *)malloc(sizeof(char) * (len1 + len2 + 1));
+    if (!new)
+        return (NULL);
+    start = new;
+    while (*s1)
+        *new++ = *s1++;
+    while (*s2)
+        *new++ = *s2++;
+    *new = '\0';
+    return (start);
 }
 
-char	*ft_substr(char *s, unsigned int start, size_t len)
+char    *ft_substr(char const *s, unsigned int start, size_t len)
 {
-	size_t	i;
-	char	*res;
+    char    *str;
+    char    *str_ptr;
 
-	i = 0;
-	if (!s)
-		return (0);
-	if (start > ft_str_len(s))
-	{
-		res = malloc(sizeof(char) * (1));
-		if (!res)
-			return (NULL);
-		res[0] = '\0';
-		return (res);
-	}
-	if (ft_str_len(s) - start < len)
-		len = ft_str_len(s) - start;
-	res = malloc(sizeof(char) * (len + 1));
-	if (!res)
-		return (NULL);
-	while (start < ft_str_len(s) && i < len && s[start])
-		res[i++] = s[start++];
-	res[i] = '\0';
-	return (res);
+    if (!s)
+        return (NULL);
+    if (start > ft_str_len(s))
+        len = 0;
+    else if (len > (ft_str_len(s) - start))
+        len = ft_str_len(s) - start;
+    str = (char *)malloc(sizeof(char) * (len + 1));
+    if (!str)
+        return (NULL);
+    s += start;
+    str_ptr = str;
+    *(str + len) = '\0';
+    while (len-- && *s)
+        *str++ = *s++;
+    return (str_ptr);
 }
