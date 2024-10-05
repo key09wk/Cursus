@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kpalacio <kpalacio@student.42.fr>          +#+  +:+       +#+        */
+/*   By: danpalac <danpalac@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/22 16:34:06 by kpalacio          #+#    #+#             */
-/*   Updated: 2024/07/31 18:31:58 by kpalacio         ###   ########.fr       */
+/*   Updated: 2024/10/05 102:32 by danpalac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-static char *ft_free(char **str)
+static char *ft_free(char **str) //OK
 {
     if (str && *str)
     {
@@ -22,36 +22,37 @@ static char *ft_free(char **str)
     return (NULL);
 }
 
-static char *get_storage(int fd, char *storage)
+static char *get_storage(int fd, char *storage) //OK
 {
     char *buffer;
-    ssize_t nb;
+    char *temp;
+    long int nb;
 
     buffer = (char *)malloc(sizeof(char) * (BUFFER_SIZE + 1));
     if (!buffer)
         return (NULL);
     nb = 1;
-    while (nb > 0 && !ft_strchr(storage, '\n'))
+    while (nb > 0)
     {
         nb = read(fd, buffer, BUFFER_SIZE);
-        if (nb > 0)
-        {
-            buffer[nb] = '\0';
-            storage = ft_strjoin(storage, buffer);
-            if (!storage)
-            {
-                free(buffer);
-                return (NULL);
-            }
-        }
+        if (nb == -1)
+            return (free(storage), free(buffer), NULL);
+        else if (nb == 0)
+            break ;
+        buffer[nb] = '\0';
+        if (!storage)
+            storage = ft_strdup("");
+        temp = storage;
+        storage = ft_strjoin(temp, buffer);
+        free(temp);
+        temp = NULL;
+        if (ft_strchr(storage, '\n'))
+            break ;
     }
-    free(buffer);
-    if (nb == -1)
-        return (ft_free(&storage));
-    return (storage);
+    return (free(buffer), storage);
 }
 
-static char *get_line(const char *storage)
+static char *get_line(char *storage) //OK
 {
     char *line;
     char *ptr;
@@ -59,14 +60,14 @@ static char *get_line(const char *storage)
 
     ptr = ft_strchr(storage, '\n');
     if (!ptr)
-        len = ft_str_len(storage);
+        len = ft_strlen(storage);
     else
         len = (ptr - storage) + 1;
     line = ft_substr(storage, 0, len);
     return (line);
 }
 
-static char *update_storage(char *storage)
+static char *update_storage(char *storage) //OK
 {
     char    *new_storage;
     char    *ptr;
@@ -76,12 +77,12 @@ static char *update_storage(char *storage)
     if (!ptr)
         return (ft_free(&storage));
     len = (ptr - storage) + 1;
-    new_storage = ft_substr(storage, len, ft_str_len(storage) - len);
+    new_storage = ft_substr(storage, len, ft_strlen(storage) - len);
     ft_free(&storage);
     return (new_storage);
 }
 
-char *get_next_line(int fd)
+char *get_next_line(int fd) //OK
 {
     static char *storage;
     char *line;
@@ -101,16 +102,18 @@ char *get_next_line(int fd)
     return (line);
 }
 
-/*
 int main(void)
 {
     int fd;
+    int number = 0;
+    char *s = 0;
 
     fd = open("file.txt", O_RDONLY);
-    printf("%s", get_next_line(fd));
-    printf("%s", get_next_line(fd));
-    printf("%s", get_next_line(fd));
+    while (s = get_next_line(fd))
+    {
+        printf("%s", s);
+        free(s);
+    }
     close(fd);
     return (0);
 }
-*/

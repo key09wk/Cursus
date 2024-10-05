@@ -6,13 +6,13 @@
 /*   By: kpalacio <kpalacio@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/22 16:34:15 by kpalacio          #+#    #+#             */
-/*   Updated: 2024/07/31 18:24:13 by kpalacio         ###   ########.fr       */
+/*   Updated: 2024/10/05 10:23:57 by kpalacio         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-size_t  ft_str_len(const char *s)
+size_t  ft_strlen(const char *s)
 {
     size_t  n;
 
@@ -22,7 +22,7 @@ size_t  ft_str_len(const char *s)
     return (n);
 }
 
-char    *ft_strchr(const char *str, int c)
+char    *ft_strchr(char *str, int c)
 {
     while (*str != (char)c)
     {
@@ -33,7 +33,7 @@ char    *ft_strchr(const char *str, int c)
     return ((char *)str);
 }
 
-char    *ft_strjoin(char const *s1, char const *s2)
+char    *ft_strjoin(char *s1, char *s2)
 {
     char    *new;
     char    *start;
@@ -42,8 +42,8 @@ char    *ft_strjoin(char const *s1, char const *s2)
 
     if (!s1 || !s2)
         return (NULL);
-    len1 = ft_str_len(s1);
-    len2 = ft_str_len(s2);
+    len1 = ft_strlen(s1);
+    len2 = ft_strlen(s2);
     new = (char *)malloc(sizeof(char) * (len1 + len2 + 1));
     if (!new)
         return (NULL);
@@ -56,17 +56,17 @@ char    *ft_strjoin(char const *s1, char const *s2)
     return (start);
 }
 
-char    *ft_substr(char const *s, unsigned int start, size_t len)
+char    *ft_substr(char *s, unsigned int start, size_t len)
 {
     char    *str;
     char    *str_ptr;
 
     if (!s)
         return (NULL);
-    if (start > ft_str_len(s))
+    if (start > ft_strlen(s))
         len = 0;
-    else if (len > (ft_str_len(s) - start))
-        len = ft_str_len(s) - start;
+    else if (len > (ft_strlen(s) - start))
+        len = ft_strlen(s) - start;
     str = (char *)malloc(sizeof(char) * (len + 1));
     if (!str)
         return (NULL);
@@ -76,4 +76,22 @@ char    *ft_substr(char const *s, unsigned int start, size_t len)
     while (len-- && *s)
         *str++ = *s++;
     return (str_ptr);
+}
+
+char *ft_strdup(const char *s1)
+{
+    char *ptr;
+    int     i;
+
+    ptr = malloc(ft_strlen(s1) + 1);
+    if (!ptr)
+        return (NULL);
+    i = 0;
+    while (s1[i])
+    {
+        ptr[i] = s1[i];
+        i++;
+    }
+    ptr[i] = '\0';
+    return (ptr);
 }
