@@ -22,15 +22,11 @@ static char *ft_free(char **str) //OK
     return (NULL);
 }
 
-static char *get_storage(int fd, char *storage) //OK
+static char *get_storage(int fd, char *storage, char *buffer) //OK
 {
-    char *buffer;
     char *temp;
     long int nb;
 
-    buffer = (char *)malloc(sizeof(char) * (BUFFER_SIZE + 1));
-    if (!buffer)
-        return (NULL);
     nb = 1;
     while (nb > 0)
     {
@@ -85,13 +81,17 @@ static char *update_storage(char *storage) //OK
 char *get_next_line(int fd) //OK
 {
     static char *storage;
+    char *buffer;
     char *line;
 
     if (fd < 0 || BUFFER_SIZE <= 0)
         return (NULL);
+    buffer = (char *)malloc(sizeof(char) * (BUFFER_SIZE + 1));
+    if (!buffer)
+        return (NULL);
     if (!storage || !ft_strchr(storage, '\n'))
     {
-        storage = get_storage(fd, storage);
+        storage = get_storage(fd, storage, buffer);
         if (!storage)
             return (NULL);
     }
@@ -105,15 +105,9 @@ char *get_next_line(int fd) //OK
 int main(void)
 {
     int fd;
-    int number = 0;
-    char *s = 0;
 
     fd = open("file.txt", O_RDONLY);
-    while (s = get_next_line(fd))
-    {
-        printf("%s", s);
-        free(s);
-    }
+    printf("%s", get_next_line(fd));
     close(fd);
     return (0);
 }

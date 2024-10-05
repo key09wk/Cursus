@@ -6,7 +6,7 @@
 /*   By: kpalacio <kpalacio@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/22 17:08:34 by kpalacio          #+#    #+#             */
-/*   Updated: 2024/10/05 11:02:18 by kpalacio         ###   ########.fr       */
+/*   Updated: 2024/10/05 11:27:32 by kpalacio         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@
 # include <limits.h>
 
 # ifndef BUFFER_SIZE
-#  define BUFFER_SIZE 100
+#  define BUFFER_SIZE 42
 # endif
 
 char    *get_next_line(int fd);
